@@ -9,6 +9,8 @@ import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.level.gamerules.GameRules;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 public interface RuleEntryContext {
     default <T> void fzgamerules$setGameRule(GameRule<T> gameRule) {
     }
@@ -83,7 +85,7 @@ public interface RuleEntryContext {
         if (resetButton != null) {
             GameRule<?> gameRule = fzgamerules$getGameRule();
             if (gameRule != null) {
-                resetButton.active = gameRule.defaultValue() != gameRules.get(gameRule);
+                resetButton.active = !Objects.equals(gameRule.defaultValue(), gameRules.get(gameRule));
             }
 
             updateResetButton(resetButton, ruleList, entry);
