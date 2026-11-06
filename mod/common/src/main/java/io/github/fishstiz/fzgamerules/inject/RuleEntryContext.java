@@ -1,5 +1,6 @@
 package io.github.fishstiz.fzgamerules.inject;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
@@ -30,6 +31,21 @@ public interface RuleEntryContext {
 
     default @Nullable AbstractWidget fzgamerules$getResetButton() {
         return null;
+    }
+
+    private boolean isFocusVisible(AbstractGameRulesScreen.RuleEntry entry) {
+        return entry.isFocused() && Minecraft.getInstance().getLastInputType().isKeyboard();
+    }
+
+    default void fzgamerules$extractHoverBackground(
+            GuiGraphicsExtractor graphics,
+            AbstractGameRulesScreen.RuleList ruleList,
+            AbstractGameRulesScreen.@Nullable RuleEntry hovered,
+            AbstractGameRulesScreen.RuleEntry entry
+    ) {
+        if (!(entry instanceof AbstractGameRulesScreen.CategoryRuleEntry) && (entry == hovered || isFocusVisible(entry))) {
+            graphics.fill(ruleList.getX(), entry.getY(), ruleList.getRight(), entry.getY() + entry.getHeight(), 0x26FFFFFF);
+        }
     }
 
     private void updateResetButton(

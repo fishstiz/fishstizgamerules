@@ -1,5 +1,6 @@
 package io.github.fishstiz.fzgamerules.inject;
 
+import io.github.fishstiz.fidgetz.v0.gui.components.events.FZHoverableContainer;
 import io.github.fishstiz.fzgamerules.gui.CategoryList;
 import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 import net.minecraft.world.level.gamerules.GameRule;
@@ -41,16 +42,32 @@ public interface RuleListContext {
         ruleList.setScrollAmount(y);
     }
 
-    default void fzgamerules$refocusGameRule(
+    default void fzgamerules$restoreGameRuleUiState(
             AbstractGameRulesScreen.RuleList ruleList,
-            AbstractGameRulesScreen.@Nullable RuleEntry previousFocused
+            AbstractGameRulesScreen.@Nullable RuleEntry previousFocused,
+            AbstractGameRulesScreen.@Nullable RuleEntry previousHovered
     ) {
-        if (previousFocused instanceof RuleEntryContext ctx) {
-            GameRule<?> gameRule = ctx.fzgamerules$getGameRule();
-            if (gameRule != null) {
+        if (previousFocused != null || previousHovered != null) {
+            GameRule<?> focusedGameRule = previousFocused == null ? null : ((RuleEntryContext) previousFocused).fzgamerules$getGameRule();
+            GameRule<?> hoveredGameRule = previousHovered == null ? null : ((RuleEntryContext) previousHovered).fzgamerules$getGameRule();
+            if (focusedGameRule != null || hoveredGameRule != null) {
+                boolean focusResolved = focusedGameRule == null;
+                boolean hoverResolved = hoveredGameRule == null;
+
                 for (AbstractGameRulesScreen.RuleEntry child : ruleList.children()) {
-                    if (((RuleEntryContext) child).fzgamerules$getGameRule() == gameRule) {
+                    GameRule<?> gameRule = ((RuleEntryContext) child).fzgamerules$getGameRule();
+
+                    if (gameRule == hoveredGameRule) {
+                        ((FZHoverableContainer) ruleList).fidgetz$setHovered(child);
+                        hoverResolved = true;
+                    }
+
+                    if (gameRule == focusedGameRule) {
                         ruleList.setFocused(child);
+                        focusResolved = true;
+                    }
+
+                    if (focusResolved && hoverResolved) {
                         break;
                     }
                 }

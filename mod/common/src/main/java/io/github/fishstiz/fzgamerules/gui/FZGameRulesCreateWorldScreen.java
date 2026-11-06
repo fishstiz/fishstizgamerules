@@ -154,15 +154,9 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
         @Override
         protected @Nullable RuleEntry getHovered() {
             GuiEventListener trueHovered = fidgetz$getHovered();
-            if (trueHovered == null) {
-                return null;
+            if (trueHovered instanceof RuleEntry entry) {
+                return entry;
             }
-
-            RuleEntry hovered = super.getHovered();
-            if (trueHovered == hovered) {
-                return hovered;
-            }
-
             return null;
         }
 
@@ -187,9 +181,10 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
         @Override
         public void populateChildren(String filter) {
             RuleEntry previousFocused = getFocused();
+            RuleEntry previousHovered = getHovered();
             super.populateChildren(filter);
             fzgamerules$populateCategories(this, categoryList, this.visibleCategory);
-            fzgamerules$refocusGameRule(this, previousFocused);
+            fzgamerules$restoreGameRuleUiState(this, previousFocused, previousHovered);
             refreshViewedCategory();
         }
 
@@ -218,8 +213,10 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
 
         @Override
         protected void extractItem(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, RuleEntry entry) {
+            RuleEntryContext ctx = (RuleEntryContext) entry;
+            ctx.fzgamerules$extractHoverBackground(graphics, this, getHovered(), entry);
             super.extractItem(graphics, mouseX, mouseY, a, entry);
-            ((RuleEntryContext) entry).fzgamerules$extractResetButton(graphics, mouseX, mouseY, a, gameRules, this, entry);
+            ctx.fzgamerules$extractResetButton(graphics, mouseX, mouseY, a, gameRules, this, entry);
         }
     }
 }
