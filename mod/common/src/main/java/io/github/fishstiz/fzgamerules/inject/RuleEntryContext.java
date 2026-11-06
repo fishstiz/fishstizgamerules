@@ -32,6 +32,27 @@ public interface RuleEntryContext {
         return null;
     }
 
+    private void updateResetButton(
+            AbstractWidget resetButton,
+            AbstractGameRulesScreen.RuleList ruleList,
+            AbstractGameRulesScreen.RuleEntry entry
+    ) {
+        int x = (entry.getContentRight() - ruleList.scrollbarWidth() / 2) + GameRulesScreenContext.fzgamerules$spacing();
+        int y = entry.getContentY();
+        resetButton.setPosition(x, y);
+    }
+
+    default void fzgamerules$updateResetButton(
+            AbstractGameRulesScreen.RuleEntry entry,
+            AbstractGameRulesScreen.RuleList ruleList
+    ) {
+        AbstractWidget resetButton = fzgamerules$getResetButton();
+
+        if (resetButton != null) {
+            updateResetButton(resetButton, ruleList, entry);
+        }
+    }
+
     default void fzgamerules$extractResetButton(
             GuiGraphicsExtractor graphics,
             int mouseX,
@@ -49,10 +70,7 @@ public interface RuleEntryContext {
                 resetButton.active = gameRule.defaultValue() != gameRules.get(gameRule);
             }
 
-            int x = (entry.getContentRight() - ruleList.scrollbarWidth() / 2) + GameRulesScreenContext.fzgamerules$spacing();
-            int y = entry.getContentY();
-
-            resetButton.setPosition(x, y);
+            updateResetButton(resetButton, ruleList, entry);
             resetButton.extractRenderState(graphics, mouseX, mouseY, a);
         }
     }

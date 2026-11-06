@@ -2,6 +2,7 @@ package io.github.fishstiz.fzgamerules.inject.mixin;
 
 import io.github.fishstiz.fidgetz.v0.gui.components.FZIconButton;
 import io.github.fishstiz.fidgetz.v0.gui.components.WidgetElements;
+import io.github.fishstiz.fidgetz.v0.gui.components.events.FZHoverableElement;
 import io.github.fishstiz.fidgetz.v0.gui.renderables.Renderables;
 import io.github.fishstiz.fzgamerules.FZGameRules;
 import io.github.fishstiz.fzgamerules.inject.GameRulesScreenContext;
@@ -71,15 +72,36 @@ abstract class GameRuleEntryMixin extends RuleEntryMixin {
                     })
                     .build();
 
+            //noinspection ConstantValue
+            if (this.fzgamerules$resetButton instanceof FZHoverableElement hoverable) {
+                hoverable.fidgetz$setHovered(false);
+            }
+
             children.add(this.fzgamerules$resetButton);
         } else {
             this.fzgamerules$resetButton = null;
         }
     }
 
+    @Unique
+    private boolean fzgamerules$isMouseOverWithSlack(double mx, double my) {
+        if (this.fzgamerules$resetButton == null
+            || !this.fzgamerules$resetButton.visible
+            || my < getY()
+            || my > getY() + getHeight()) {
+            return false;
+        }
+
+        AbstractGameRulesScreen.RuleList ruleList = ((AbstractGameRulesScreenAccess) this$0).getRuleList();
+        if (ruleList != null) {
+            fzgamerules$updateResetButton((AbstractGameRulesScreen.RuleEntry) (Object) this, ruleList);
+        }
+
+        return mx >= getX() && mx < this.fzgamerules$resetButton.getRight();
+    }
+
     @Override
     protected boolean modifyIsMouseOver(boolean original, double mx, double my) {
-        return super.modifyIsMouseOver(original, mx, my)
-               || (this.fzgamerules$resetButton != null && this.fzgamerules$resetButton.isMouseOver(mx, my));
+        return super.modifyIsMouseOver(original, mx, my) || fzgamerules$isMouseOverWithSlack(mx, my);
     }
 }

@@ -3,6 +3,7 @@ package io.github.fishstiz.fzgamerules.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.fishstiz.fidgetz.v0.gui.components.*;
 import io.github.fishstiz.fidgetz.v0.gui.components.events.FZHoverableContainer;
+import io.github.fishstiz.fidgetz.v0.gui.components.events.FZHoverableElement;
 import io.github.fishstiz.fidgetz.v0.gui.layouts.FZLayout;
 import io.github.fishstiz.fzgamerules.inject.GameRulesScreenContext;
 import io.github.fishstiz.fzgamerules.inject.RuleEntryContext;
@@ -161,6 +162,22 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
         }
 
         @Override
+        protected int addEntry(RuleEntry entry, int height) {
+            if (entry instanceof FZHoverableElement hoverable) {
+                hoverable.fidgetz$setHovered(false);
+            }
+            return super.addEntry(entry, height);
+        }
+
+        @Override
+        protected void addEntryToTop(RuleEntry entry, int height) {
+            super.addEntryToTop(entry, height);
+            if (entry instanceof FZHoverableElement hoverable) {
+                hoverable.fidgetz$setHovered(false);
+            }
+        }
+
+        @Override
         protected @Nullable RuleEntry getHovered() {
             GuiEventListener trueHovered = fidgetz$getHovered();
             if (trueHovered == null) {
@@ -183,22 +200,21 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
                     categoryList.onViewCategory(newVisibleCategory);
                 }
             }
+        }
 
+        @Override
+        protected void clearEntries() {
+            super.clearEntries();
+            setFocused(null);
+            fidgetz$setHovered(null);
         }
 
         @Override
         public void populateChildren(String filter) {
+            RuleEntry previousFocused = getFocused();
             super.populateChildren(filter);
-            if (categoryList != null) {
-                categoryList.populateCategories(
-                        children().stream()
-                                .filter(CategoryRuleEntry.class::isInstance)
-                                .map(CategoryRuleEntry.class::cast)
-                                .toList(),
-                        category -> fzgamerules$scrollEntryToTop(this, category)
-                );
-                categoryList.onViewCategory(this.visibleCategory);
-            }
+            fzgamerules$populateCategories(this, categoryList, this.visibleCategory);
+            fzgamerules$refocusGameRule(this, previousFocused);
             refreshViewedCategory();
         }
 

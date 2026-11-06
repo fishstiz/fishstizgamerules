@@ -1,6 +1,8 @@
 package io.github.fishstiz.fzgamerules.inject;
 
+import io.github.fishstiz.fzgamerules.gui.CategoryList;
 import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
+import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleCategory;
 import org.jspecify.annotations.Nullable;
 
@@ -37,6 +39,40 @@ public interface RuleListContext {
         }
 
         ruleList.setScrollAmount(y);
+    }
+
+    default void fzgamerules$refocusGameRule(
+            AbstractGameRulesScreen.RuleList ruleList,
+            AbstractGameRulesScreen.@Nullable RuleEntry previousFocused
+    ) {
+        if (previousFocused instanceof RuleEntryContext ctx) {
+            GameRule<?> gameRule = ctx.fzgamerules$getGameRule();
+            if (gameRule != null) {
+                for (AbstractGameRulesScreen.RuleEntry child : ruleList.children()) {
+                    if (((RuleEntryContext) child).fzgamerules$getGameRule() == gameRule) {
+                        ruleList.setFocused(child);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    default void fzgamerules$populateCategories(
+            AbstractGameRulesScreen.RuleList ruleList,
+            @Nullable CategoryList categoryList,
+            @Nullable GameRuleCategory visibleCategory
+    ) {
+        if (categoryList != null) {
+            categoryList.populateCategories(
+                    ruleList.children().stream()
+                            .filter(AbstractGameRulesScreen.CategoryRuleEntry.class::isInstance)
+                            .map(AbstractGameRulesScreen.CategoryRuleEntry.class::cast)
+                            .toList(),
+                    category -> fzgamerules$scrollEntryToTop(ruleList, category)
+            );
+            categoryList.onViewCategory(visibleCategory);
+        }
     }
 
     default @Nullable GameRuleCategory fzgamerules$getViewedCategory(AbstractGameRulesScreen.RuleList ruleList) {
