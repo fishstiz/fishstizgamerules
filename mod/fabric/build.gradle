@@ -1,0 +1,85 @@
+import me.modmuss50.mpp.ReleaseType
+
+plugins {
+    id 'multiloader-loader'
+    id 'net.fabricmc.fabric-loom'
+    id 'me.modmuss50.mod-publish-plugin'
+    id 'publish-local'
+}
+
+loom {
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+
+    def aw = file("src/main/resources/${mod_id}.classtweaker")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+
+    runs {
+        client {
+            client()
+            getDisplayName().set('Fabric Client')
+            getGenerateRunConfig().set(true)
+            getRunDirectory().set(file('run/client'))
+            getJvmArguments().add('-Dfidgetz.debug')
+        }
+    }
+}
+
+jar {
+    processResources.exclude('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+repositories {
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    implementation libs.fidgetz.fabric
+
+    minecraft "com.mojang:minecraft:$minecraft_version"
+    implementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    implementation "net.fabricmc.fabric-api:fabric-api:$fabric_api_version"
+
+    compileOnly libs.modmenu
+    localRuntime libs.modmenu
+}
+
+publishMods {
+    dryRun = Boolean.valueOf(dry_run)
+    type = ReleaseType.of(release_type)
+    changelog = rootProject.file("CHANGELOG.md").text
+    displayName = "Fabric v${this.version}"
+    file = jar.archiveFile
+    additionalFiles.from(sourcesJar.archiveFile)
+    modLoaders.add("fabric")
+
+    github {
+        parent rootProject.tasks.named("publishGithub")
+        accessToken = findProperty("GITHUB_TOKEN") ?: ""
+    }
+
+    modrinth {
+        accessToken = findProperty("MODRINTH_TOKEN") ?: ""
+        projectId = modrinth_id
+        minecraftVersions.addAll(modrinth_versions.split(','))
+        requires("fabric-api")
+        requires("fidgetz")
+    }
+
+    curseforge {
+        accessToken = findProperty("CURSEFORGE_TOKEN") ?: ""
+        projectId = curseforge_id
+        minecraftVersions.addAll(curseforge_versions.split(','))
+        client = true
+        requires("fabric-api")
+        requires("fidgetz")
+    }
+}

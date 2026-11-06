@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contributors": [
+    "${credits}"
+  ],
+  "contact": {
+    "sources": "${sources}",
+    "issues": "${issues}"
+  },
+  "license": "${license}",
+  "icon": "icon.png",
+  "environment": "client",
+  "mixins": [
+    {
+      "config": "${mod_id}.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "fishstizgamerules.classtweaker",
+  "depends": {
+    "minecraft": "${fabric_minecraft_version_range}",
+    "fabricloader": ">=0.19.0",
+    "fabric-api": "*",
+    "fidgetz": ">=0.7.3"
+  }
+}

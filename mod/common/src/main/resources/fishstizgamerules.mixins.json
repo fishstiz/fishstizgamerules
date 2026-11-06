@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "io.github.fishstiz.fzgamerules.inject.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "AbstractGameRulesScreenAccess",
+    "AbstractSelectionListEntryMixin",
+    "CategoryRuleEntryAccess",
+    "CategoryRuleEntryMixin",
+    "GameRuleEntryMixin",
+    "GuiMixin",
+    "InWorldGameRulesScreenAccess",
+    "InWorldGameRulesScreenMixin",
+    "RuleEntryMixin",
+    "RuleListMixin",
+    "RuleListTypeVisitorMixin"
+  ]
+}

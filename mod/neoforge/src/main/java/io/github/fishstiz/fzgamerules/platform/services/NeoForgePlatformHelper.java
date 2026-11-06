@@ -1,0 +1,29 @@
+package io.github.fishstiz.fzgamerules.platform.services;
+
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
+
+import java.nio.file.Path;
+
+public class NeoForgePlatformHelper implements PlatformHelper {
+    @Override
+    public String getPlatform() {
+        return "neoforge";
+    }
+
+    @Override
+    public Path getConfigDir() {
+        return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public boolean isModLoaded(String id) {
+        return ModList.get().isLoaded(id);
+    }
+
+    @Override
+    public boolean isDev() {
+        return !FMLLoader.getCurrent().isProduction();
+    }
+}

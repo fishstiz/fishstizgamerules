@@ -1,0 +1,4 @@
+classTweaker v2 official
+accessible method net/minecraft/client/gui/screens/worldselection/AbstractGameRulesScreen$RuleList populateChildren (Ljava/lang/String;)V
+extendable method net/minecraft/client/gui/screens/worldselection/AbstractGameRulesScreen$RuleList populateChildren (Ljava/lang/String;)V
+accessible class net/minecraft/client/gui/screens/worldselection/AbstractGameRulesScreen$EntryFactory
