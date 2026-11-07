@@ -2,9 +2,12 @@
 
 Changes the game rules screen to make it a little easier to navigate.
 
-Features
-- Category sidebar
-- Individual Reset buttons
-- Copy to clipboard option to copy gamerule IDs
+<img width="851" height="479" alt="image" src="https://github.com/user-attachments/assets/c1540654-dbec-45b2-90db-a84d556c83ce" />
 
-More features will be added if there's interest in the mod.
+## Features
+- Presets
+  - Presets can have custom icons by adding a `[preset-id].png` file in the presets directory.
+- Category sidebar
+- Individual reset buttons
+- Reset all button
+- Copy to clipboard option to copy game rule IDs
