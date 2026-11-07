@@ -229,7 +229,7 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
         }
 
         @Override
-        protected void clearEntries() {
+        public void clearEntries() {
             super.clearEntries();
             setFocused(null);
             fidgetz$setHovered(null);

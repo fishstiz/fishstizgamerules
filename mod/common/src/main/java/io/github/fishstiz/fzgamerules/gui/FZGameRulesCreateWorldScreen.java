@@ -204,7 +204,7 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
         }
 
         @Override
-        protected void clearEntries() {
+        public void clearEntries() {
             super.clearEntries();
             setFocused(null);
             fidgetz$setHovered(null);
