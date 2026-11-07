@@ -48,6 +48,9 @@ public interface GameRulesScreenContext {
     default void fzgamerules$setDoneButton(Button doneButton) {
     }
 
+    default void fzgamerules$showPresetDialog() {
+    }
+
     default boolean fzgamerules$shouldIncludeReset() {
         return false;
     }
@@ -122,6 +125,12 @@ public interface GameRulesScreenContext {
                         mainLayout.flexChildHorizontalSettings()
                 );
                 footerLayout.spacing(fzgamerules$spacing()).defaultChildSettings().flexMain();
+
+                footerLayout.child(FZButton.builder()
+                        .message(Component.translatable("fishstizgamerules.presets").append(CommonComponents.ELLIPSIS))
+                        .focusOnInteraction(false)
+                        .onPress(this::fzgamerules$showPresetDialog)
+                        .build());
 
                 fzgamerules$setDoneButton(footerLayout.child(FZButton.builder()
                         .message(CommonComponents.GUI_DONE)

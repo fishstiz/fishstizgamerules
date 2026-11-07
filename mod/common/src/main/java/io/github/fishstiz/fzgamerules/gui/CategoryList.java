@@ -85,6 +85,7 @@ public class CategoryList extends FZAbstractListWidget<CategoryList.Entry> {
                     .leftAlignedMessage()
                     .onPress(onPress)
                     .build();
+            fidgetz$setHovered(false);
         }
 
         @Override

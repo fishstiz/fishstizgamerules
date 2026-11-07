@@ -30,6 +30,7 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
     protected final FZDialogManager dialogManager = new FZDialogManager(this);
     private @Nullable FZLayout layout;
     private @Nullable CategoryList categoryList;
+    private boolean blurBackground = true;
 
     public FZGameRulesInWorldScreen(
             ClientPacketListener connection,
@@ -40,12 +41,26 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
     }
 
     public static FZGameRulesInWorldScreen fromVanilla(InWorldGameRulesScreen inWorldGameRulesScreen) {
+        if (inWorldGameRulesScreen instanceof FZGameRulesInWorldScreen screen) {
+            return screen;
+        }
+
         InWorldGameRulesScreenAccess screenAccess = (InWorldGameRulesScreenAccess) inWorldGameRulesScreen;
         return new FZGameRulesInWorldScreen(
                 screenAccess.getConnection(),
                 screenAccess.getExitCallback(),
                 screenAccess.getLastScreen()
         );
+    }
+
+    @Override
+    public void added() {
+        this.blurBackground = true;
+    }
+
+    @Override
+    public void removed() {
+        this.blurBackground = false;
     }
 
     @Override
@@ -116,6 +131,11 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
     }
 
     @Override
+    public void fzgamerules$showPresetDialog() {
+        GameRulesPresetDialog.startDialog(minecraft, this);
+    }
+
+    @Override
     public boolean fzgamerules$shouldIncludeReset() {
         return true;
     }
@@ -154,6 +174,13 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
+    @Override
+    protected void extractBlurredBackground(GuiGraphicsExtractor graphics) {
+        if (blurBackground) {
+            super.extractBlurredBackground(graphics);
+        }
+    }
+
     public class RuleList extends AbstractGameRulesScreen.RuleList implements RuleListContext, FZHoverableContainer {
         private @Nullable GameRuleCategory visibleCategory = null;
 
@@ -165,6 +192,11 @@ public class FZGameRulesInWorldScreen extends InWorldGameRulesScreen implements 
         protected int addEntry(RuleEntry entry, int height) {
             if (entry instanceof FZHoverableElement hoverable) {
                 hoverable.fidgetz$setHovered(false);
+                entry.children().forEach(child -> {
+                    if (child instanceof FZHoverableElement hoverableChild) {
+                        hoverableChild.fidgetz$setHovered(false);
+                    }
+                });
             }
             return super.addEntry(entry, height);
         }

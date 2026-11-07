@@ -27,14 +27,29 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
     private final FZDialogManager dialogManager = new FZDialogManager(this);
     private @Nullable FZLayout layout;
     private @Nullable CategoryList categoryList;
+    private boolean blurBackground = true;
 
     public FZGameRulesCreateWorldScreen(GameRules gameRules, Consumer<Optional<GameRules>> exitCallback) {
         super(gameRules, exitCallback);
     }
 
     public static FZGameRulesCreateWorldScreen fromVanilla(WorldCreationGameRulesScreen screen) {
+        if (screen instanceof FZGameRulesCreateWorldScreen gameRulesScreen) {
+            return gameRulesScreen;
+        }
+
         AbstractGameRulesScreenAccess screenAccess = ((AbstractGameRulesScreenAccess) screen);
         return new FZGameRulesCreateWorldScreen(screenAccess.getGameRules(), screenAccess.getExitCallback());
+    }
+
+    @Override
+    public void added() {
+        this.blurBackground = true;
+    }
+
+    @Override
+    public void removed() {
+        this.blurBackground = false;
     }
 
     @Override
@@ -89,6 +104,11 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
     }
 
     @Override
+    public void fzgamerules$showPresetDialog() {
+        GameRulesPresetDialog.startDialog(minecraft, this);
+    }
+
+    @Override
     public boolean fzgamerules$shouldIncludeReset() {
         return true;
     }
@@ -127,6 +147,13 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
+    @Override
+    protected void extractBlurredBackground(GuiGraphicsExtractor graphics) {
+        if (blurBackground) {
+            super.extractBlurredBackground(graphics);
+        }
+    }
+
     // its not feasible to completely change rule list because of custom rule entries
     public class RuleList extends AbstractGameRulesScreen.RuleList implements RuleListContext, FZHoverableContainer {
         private @Nullable GameRuleCategory visibleCategory = null;
@@ -139,6 +166,11 @@ public class FZGameRulesCreateWorldScreen extends WorldCreationGameRulesScreen i
         protected int addEntry(RuleEntry entry, int height) {
             if (entry instanceof FZHoverableElement hoverable) {
                 hoverable.fidgetz$setHovered(false);
+                entry.children().forEach(child -> {
+                    if (child instanceof FZHoverableElement hoverableChild) {
+                        hoverableChild.fidgetz$setHovered(false);
+                    }
+                });
             }
             return super.addEntry(entry, height);
         }

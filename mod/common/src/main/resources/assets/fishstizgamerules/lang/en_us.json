@@ -1,3 +1,13 @@
 {
-  "modmenu.descriptionTranslation.fishstizgamerules": "fishstiz' Game Rules Screen"
+  "modmenu.descriptionTranslation.fishstizgamerules": "fishstiz' Game Rules Screen",
+  "fishstizgamerules.presets": "Presets",
+  "fishstizgamerules.presets.empty": "No Presets found.",
+  "fishstizgamerules.preset": "Preset",
+  "fishstizgamerules.preset.new": "Create Preset",
+  "fishstizgamerules.preset.new.fail": "Failed to create preset",
+  "fishstizgamerules.preset.edit": "Edit Preset",
+  "fishstizgamerules.preset.name": "Name",
+  "fishstizgamerules.preset.description": "Description",
+  "fishstizgamerules.preset.save_game_rules": "Save Game Rules",
+  "fishstizgamerules.preset.save_game_rules.info": "Save the current game rules to this preset."
 }
