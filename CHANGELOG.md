@@ -1,0 +1,4 @@
+- Added presets
+- Added reset all button
+- Added hover background
+- Fixed buttons sometimes not working when scrolling via the sidebar
